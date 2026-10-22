@@ -1,0 +1,56 @@
+You are extracting structured Tier-2 fields from a cold-case narrative.
+
+Tier-2 fields are facts that the source provides only in free-text form
+(unlike weapon and location_type which are Tier-1 categorical
+classifications). For each field, return both the parsed value and the
+verbatim substring from the narrative that justifies it. The verbatim
+substring MUST appear character-for-character in the narrative (so
+downstream UI can highlight the source span).
+
+Return a single JSON object matching this schema:
+{
+  "incident_date": string or null — ISO 8601 date (YYYY-MM-DD) of the
+    crime if explicitly stated. If only a year or month/year is given,
+    pick the FIRST day of the smallest known unit (e.g. "in late 2008"
+    → "2008-12-01" is too aggressive; prefer null if the day is unknown
+    AND the month is unknown). If multiple dates appear (date of crime
+    vs. date body found), prefer the date the crime occurred.
+  "incident_date_phrase": string or null — verbatim source phrase like
+    "November 21, 2008" or "On August 18, 1994". Null if incident_date
+    is null.
+
+  "address": string or null — full address string as written in the
+    narrative if present. May be street-precise ("8240 Church Lane,
+    21244") or block-level ("6000 block of Barstow Road, 21206").
+    Return as written; do NOT normalize or expand abbreviations. Null
+    if no specific address is given (e.g. only a city name).
+  "address_phrase": string or null — verbatim source phrase justifying
+    the address. Usually identical to "address" itself.
+
+  "victim_age": integer or null — victim's age at time of crime, in
+    years. Pull from phrases like "31-year-old Andre Gay" or
+    "21 years old". Null if not stated.
+  "victim_age_phrase": string or null — verbatim source phrase like
+    "31-year-old". Null if age is null.
+
+  "victim_gender": string enum or null — one of "M", "F", or null.
+    Infer from pronouns ("he", "his" → M; "she", "her" → F) or from
+    explicit identifying language ("the male victim"). If only a
+    first name is available with NO pronouns or other gender signals,
+    return null and rely on low-confidence framing rather than guessing.
+    CRITICAL: In multi-victim or multi-person narratives, ensure the
+    pronoun or descriptor you use actually refers to the victim, not
+    to a suspect, witness, or other individual. If the narrative has
+    multiple people and the pronoun is ambiguous, only extract gender
+    when clearly attributed to the victim.
+  "victim_gender_phrase": string or null — verbatim source phrase
+    justifying the gender. Pronouns are valid phrases (e.g. "He").
+    Null if gender is null.
+}
+
+For every field: if the narrative does NOT contain the information,
+return null for both the value and the phrase. Prefer null over
+guessing.
+
+Narrative:
+{about_text}

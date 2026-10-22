@@ -1,0 +1,26 @@
+sources:
+  - source_key: cold_case_ar_asp_2026_07_06
+    source_family: cold_case
+    adapter_name: cold_case_ar_asp
+    source_code: ASP_AR
+    source_name: Arkansas State Police - Criminal Investigation Division Cold Cases
+    input_path: https://dps.arkansas.gov/law-enforcement/arkansas-state-police/divisions/criminal-investigations/cold-cases/
+    input_type: url
+    source_year: 2026
+    source_state: AR
+    description: >-
+      Arkansas State Police CID cold-case pages: one WordPress index page
+      linking ~144 case detail pages (homicides and missing persons). ASP is
+      the first-party investigating agency (assist-requested by county
+      sheriffs/PDs). The index lists every case in two mirrored panes (left
+      sidebar menu + center content lists) with inconsistent slug casing
+      between them; the scraper unions both panes and dedupes on lowercased
+      slug. robots.txt allows all paths and asks Crawl-delay 10, which the
+      scraper honors via rate_limit_seconds.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://dps.arkansas.gov/law-enforcement/arkansas-state-police/divisions/criminal-investigations/cold-cases/
+      source_release_date: "2026-07-06"
+      rate_limit_seconds: 10.0
+      max_photo_failure_ratio: 0.5

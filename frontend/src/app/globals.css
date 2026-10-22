@@ -1,0 +1,318 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Status / semantic color (the "live" green; previously hardcoded). */
+  --color-success: var(--success);
+
+  /* Type scale — Tailwind defaults stay the backbone; we only add the
+     sub-12px micro step the default scale lacks (eyebrows, badges, strip). */
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-2xs--line-height: 1.2;
+
+  /* Tracking — eyebrows need wider spacing than Tailwind's widest (0.1em);
+     snug fills the gap between normal and the default -0.025em tight. */
+  --tracking-snug: -0.01em;
+  --tracking-eyebrow: 0.14em;
+
+  /* Container widths — one app column (chrome + content align to it),
+     one reading width for long-form, one narrow prose width. */
+  --container-app: 77.5rem; /* 1240px */
+  --container-reading: 65rem; /* 1040px */
+  --container-prose: 42.5rem; /* 680px */
+
+  /* Instrument semantic surfaces + accents (Phase 0). */
+  --color-inset: var(--inset);
+  --color-elev: var(--elev);
+  --color-hair: var(--hair);
+  --color-border-soft: var(--border-soft);
+  --color-faint: var(--faint);
+  --color-accent-2: var(--accent-2);
+  --color-accent-dim: var(--accent-dim);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* Display headline — Saira Semi Condensed (big figures, h1s). */
+  --font-headline: var(--font-display), var(--font-sans), system-ui, sans-serif;
+
+  /* Landing extras — wide container for the full-bleed sections. */
+  --container-wide: 100rem; /* 1600px */
+}
+
+/* ============================================================
+   Instrument theme (Phase 0). Dark-first — the prototype is
+   dark-only and the app is force-dark until a light variant is
+   derived (roadmap Phase G). :root and .dark are identical for
+   now, so nothing renders a half-migrated light state.
+   Accent: Latent Trace brand orange #FF671A.
+   ============================================================ */
+:root,
+.dark {
+  /* Neutrals — cool, hue 248. Near-black surfaces. */
+  --background: oklch(0.135 0.012 248);
+  --foreground: oklch(0.945 0.008 248);
+  --card: oklch(0.175 0.013 248);
+  --card-foreground: oklch(0.945 0.008 248);
+  --popover: oklch(0.175 0.013 248);
+  --popover-foreground: oklch(0.945 0.008 248);
+
+  /* Surfaces: recessed wells, raised chrome, dividers */
+  --inset: oklch(0.120 0.011 248);
+  --elev: oklch(0.200 0.014 248);
+  --hair: oklch(0.230 0.014 248);
+  --border: oklch(0.290 0.016 248);
+  --border-soft: oklch(0.245 0.015 248);
+  --input: oklch(0.290 0.016 248);
+
+  /* 'muted' = subtle surface; 'muted-foreground' = secondary text;
+     'faint' = labels/eyebrows/ticks. Kept >= WCAG AA 4.5:1 on every surface
+     token (bg/card/inset/elev) since text-faint carries information-bearing
+     labels app-wide; do not lower below ~0.62 L without splitting a separate
+     decorative-only token. */
+  --muted: oklch(0.225 0.016 248);
+  --muted-foreground: oklch(0.66 0.016 248);
+  --faint: oklch(0.62 0.016 248);
+  --secondary: var(--muted);
+  --secondary-foreground: oklch(0.945 0.008 248);
+
+  /* Accent — Latent Trace brand orange (warm). Single brand accent, reserved for
+     data / status / key figures / hover. Matches the brand kit (DESIGN.md):
+     primary #FF671A = oklch(0.6977 0.2010 42.06) (6.15:1 on bg, 5.27:1 on card
+     — AA), lighter accent-2 #FF894D = oklch(0.7500 0.1613 45.96). Foreground
+     stays dark: dark-on-orange is 6.38:1 AA; white-on-orange fails (2.91). */
+  --primary: oklch(0.6977 0.2010 42.06);
+  --primary-foreground: oklch(0.12 0.012 248);
+  --accent: oklch(0.6977 0.2010 42.06);
+  --accent-foreground: oklch(0.12 0.012 248);
+  --accent-2: oklch(0.7500 0.1613 45.96); /* graphical only — no safe text foreground in palette */
+  --accent-dim: oklch(0.6977 0.2010 42.06 / 0.14);
+  --ring: oklch(0.6977 0.2010 42.06);
+
+  /* Semantic status */
+  --warning: oklch(0.80 0.12 78); /* amber — OPEN status, county-level completeness */
+  --danger: oklch(0.70 0.17 25); /* red — homicide type, "not in source" */
+  --destructive: var(--danger);
+  --success: oklch(0.80 0.15 150); /* retained; live signals use the accent */
+
+  --radius: 0.625rem;
+}
+
+:root { --edge: clamp(34px, 4.4vw, 80px); }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    /* App is force-dark (next-themes forcedTheme="dark"); tell the UA so form
+       controls, scrollbars, and the canvas paint dark before CSS loads. */
+    color-scheme: dark;
+  }
+}
+
+/* Graph-paper texture — a faint fixed 34px grid, radial-masked to fade
+   downward. The "instrument" backdrop. App content sits in a z-1 stacking
+   context above it (see layout.tsx). Toggle off with [data-grid="off"]. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(oklch(0.99 0 0 / 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.99 0 0 / 0.018) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse 130% 95% at 50% 0%, #000 35%, transparent 80%);
+}
+[data-grid="off"] body::before {
+  display: none;
+}
+
+@keyframes pulse-live {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 50%, transparent); }
+  70% { box-shadow: 0 0 0 6px color-mix(in oklch, var(--primary) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+}
+
+.pulse-live {
+  animation: pulse-live 2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-live { animation: none; }
+}
+
+@keyframes page-load-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-load-child {
+  animation: page-load-fade 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-load-child { animation: none; }
+}
+
+/* Map canvas — leaflet/dist/leaflet.css defaults .leaflet-container to #ddd
+   (light grey), which flashes white before tiles paint and shows through if a
+   tile fails. Pin it to a gray-black so the map never reads white, and lift the
+   near-black CARTO dark tiles a touch toward gray (the filter hits only basemap
+   tiles, not the marker/overlay panes, so ember markers stay full-strength). */
+.leaflet-container {
+  background: #2b313a !important;
+}
+.leaflet-tile {
+  filter: brightness(1.85) contrast(0.92);
+}
+
+/* Leaflet map popups — restyle the default white box to the Instrument
+   panel (.mappop): dark card, accent border, flush content so MarkerPopup
+   owns its own header/body/footer padding + dividers. `!important` is needed
+   because leaflet/dist/leaflet.css is imported at the component level and can
+   land after globals.css in the bundle, so plain rules lose the cascade. */
+.leaflet-popup-content-wrapper {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 18px 40px -16px #000 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+}
+.leaflet-popup-tip {
+  background: var(--card) !important;
+  border: 1px solid var(--primary) !important;
+  box-shadow: none !important;
+}
+.leaflet-popup-close-button {
+  color: var(--faint) !important;
+  padding: 6px 7px 0 0 !important;
+}
+.leaflet-popup-close-button:hover {
+  color: var(--foreground) !important;
+  background: transparent !important;
+}
+
+/* Leaflet zoom control — restyle the default white +/- buttons to the
+   Instrument glass look (dark card, hairline divider, ember hover). The
+   pinned margin keeps a stable offset so the floating Recenter button can
+   sit just above it. !important mirrors the popup rules: leaflet's own CSS
+   is imported at the component level and can win the cascade otherwise. */
+.leaflet-control-zoom {
+  margin: 0 0 16px 16px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 8px 24px -12px #000 !important;
+}
+.leaflet-control-zoom a {
+  background: color-mix(in oklab, var(--card) 85%, transparent) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px) !important;
+  color: var(--foreground) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--hair) !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-family: var(--font-mono), monospace !important;
+}
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--elev) !important;
+  color: var(--accent) !important;
+}
+.leaflet-control-zoom a.leaflet-disabled,
+.leaflet-control-zoom a.leaflet-disabled:hover {
+  background: color-mix(in oklab, var(--card) 60%, transparent) !important;
+  color: var(--faint) !important;
+  cursor: default !important;
+}
+
+/* Landing layout helpers — used by later tasks. */
+.band-alt { background: var(--elev); }
+.bleed { padding-inline: clamp(26px, 3vw, 56px); }
+.edge { padding-inline: var(--edge); }
+.wrap-wide { max-width: var(--container-wide); margin-inline: auto; padding-inline: var(--edge); }
+
+/* Reveal motion primitive */
+.reveal { opacity: 0; transform: translateY(18px);
+  transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.reveal[data-shown] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* Nav fluid text CTA — underline draws from left on hover. */
+.navlink { position: relative; padding: 8px 0; }
+.navlink::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 1px;
+  height: 1px; background: var(--accent); transition: right .22s cubic-bezier(.2,.7,.2,1); }
+.navlink:hover::after { right: 0; }
+.navlink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Baseline keyboard focus indicator for interactive controls that don't define
+   their own. Components with a custom ring (Button, .navlink) layer on top. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* KDE ridgeline draw-in animation */
+.ridge-line { stroke-dasharray: 2600; stroke-dashoffset: 2600; animation: ridge-draw 1.7s ease .2s forwards; }
+@keyframes ridge-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .ridge-line { animation: none; stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .navlink::after { transition: none; } }
+
+/* Heatmap cell hover — CSS-only so Heatmap.tsx can be a server component. */
+.hm-cell { transition: transform .12s ease, box-shadow .12s ease; }
+.hm-cell:hover { transform: scale(1.08); box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-2) 50%, transparent); position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .hm-cell:hover { transform: none; } }

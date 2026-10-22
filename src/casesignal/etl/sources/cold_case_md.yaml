@@ -1,0 +1,126 @@
+sources:
+  - source_key: cold_case_md_baltimore_county_2026_05_08
+    source_family: cold_case
+    adapter_name: cold_case_md_baltimore_county
+    source_code: BCOUNTY_MD_PD
+    source_name: Baltimore County, MD Police Department — Unsolved Homicides
+    input_path: https://www.baltimorecountymd.gov/departments/police/unsolved/homicides
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Baltimore County Government, MD — public unsolved-homicides page.
+      Scraped at runtime via the polite_http client (CaseSignal-branded UA;
+      respects robots.txt). One detail page per case; addresses are
+      narrative-only and resolved via the geocoding worker (Census street
+      → ZIP centroid → county centroid ladder).
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.baltimorecountymd.gov/departments/police/unsolved/homicides
+      source_release_date: "2026-05-08"
+
+  - source_key: cold_case_md_anne_arundel_2026_05_08
+    source_family: cold_case
+    adapter_name: cold_case_md_anne_arundel
+    source_code: AACO_MD_PD
+    source_name: Anne Arundel County, MD Police Department — Cold Cases
+    input_path: https://www.aacounty.org/police-department/crime-information/cold-cases
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Anne Arundel County Police Department, MD — public cold-cases page.
+      Single Drupal-rendered page with ~75 h3-anchored victim sections.
+      Narratives explicitly state case number, age, race, and gender;
+      extracted via Tier-2 prompt v2 (race-aware).
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.aacounty.org/police-department/crime-information/cold-cases
+      source_release_date: "2026-05-08"
+
+  - source_key: cold_case_md_howard_2026_05_09
+    source_family: cold_case
+    adapter_name: cold_case_md_howard
+    source_code: HOWARD_MD_PD
+    source_name: Howard County, MD Police Department — Cold Cases
+    input_path: https://www.howardcountymd.gov/police/cold-cases
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Howard County Police Department, MD — public cold-cases page.
+      Single-page Drupal accordion site with ~24 unsolved cases (plus 3
+      SOLVED filtered out). Static HTML; ~50% of cases include a photo
+      or sketch. Includes IDENTIFIED-prefix cases (victim DNA-named,
+      homicide still active).
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.howardcountymd.gov/police/cold-cases
+      source_release_date: "2026-05-09"
+
+  - source_key: cold_case_md_harford_2026_05_09
+    source_family: cold_case
+    adapter_name: cold_case_md_harford
+    source_code: HARFORD_MD_SO
+    source_name: Harford County, MD Sheriff's Office — Cold Cases
+    input_path: https://harfordsheriff.org/wanted/cold-cases/
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Harford County Sheriff's Office, MD — public cold cases archive.
+      Single-page WordPress site (~21 unsolved cases, 1981-2021) with
+      a `<ul class="subjects type-1">` layout. Each case has either a
+      real photo or a WordPress no_photo placeholder (handled by the
+      shared placeholder regex with `-N`/`-N-M` suffix tolerance).
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://harfordsheriff.org/wanted/cold-cases/
+      source_release_date: "2026-05-09"
+
+  - source_key: cold_case_md_charles_2026_05_09
+    source_family: cold_case
+    adapter_name: cold_case_md_charles
+    source_code: CCSO_MD_PD
+    source_name: Charles County, MD Sheriff's Office — Cold Cases (Homicides)
+    input_path: https://www.ccso.us/crime/cold-cases/
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Charles County Sheriff's Office, MD — public cold-cases page. Index
+      page groups cases under "Homicides" and "Sexual Assaults" H2 sections;
+      we ingest only the Homicides section. ARREST MADE entries are filtered
+      out (solved). 5 unsolved homicides at time of writing. Per-case detail
+      pages provide the narrative.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.ccso.us/crime/cold-cases/
+      source_release_date: "2026-05-09"
+
+  - source_key: cold_case_md_wicomico_2026_05_09
+    source_family: cold_case
+    adapter_name: cold_case_md_wicomico
+    source_code: WICO_MD_SO
+    source_name: Wicomico County, MD Sheriff's Office — Cold Cases (Homicides)
+    input_path: https://www.wicomicosheriff.com/coldCases
+    input_type: url
+    source_year: 2026
+    source_state: MD
+    description: >-
+      Wicomico County Sheriff's Office, MD — public cold-cases page.
+      Paginated card-tile index (?page=N, ~5 cards/page, 12 total at
+      time of writing). Detail pages keyed by Mongo-style ObjectId hex
+      slugs. We filter cases whose card title begins "Missing Person -",
+      keeping homicides only (~6 unsolved homicides at time of writing,
+      after the defensive missing-person filter).
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.wicomicosheriff.com/coldCases
+      source_release_date: "2026-05-09"

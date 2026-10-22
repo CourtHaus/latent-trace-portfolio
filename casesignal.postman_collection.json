@@ -1,0 +1,1608 @@
+{
+  "info": {
+    "name": "CaseSignal API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Full API surface for CaseSignal. Set collection variables before running: base_url, api_key (admin key for admin routes), dataset_version_id, incident_id, jurisdiction_id, source_code."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "api_key",
+      "value": "REPLACE_WITH_YOUR_API_KEY"
+    },
+    {
+      "key": "dataset_version_id",
+      "value": "1"
+    },
+    {
+      "key": "incident_id",
+      "value": "1"
+    },
+    {
+      "key": "jurisdiction_id",
+      "value": "1"
+    },
+    {
+      "key": "source_code",
+      "value": "FBI_NIBRS"
+    },
+    {
+      "key": "source_year",
+      "value": "2022"
+    },
+    {
+      "key": "source_state",
+      "value": "VA"
+    },
+    {
+      "key": "ai_briefing_id",
+      "value": "1"
+    },
+    {
+      "key": "va_richmond_jurisdiction_id",
+      "value": "88"
+    },
+    {
+      "key": "md_baltimore_jurisdiction_id",
+      "value": "1262"
+    },
+    {
+      "key": "ca_los_angeles_jurisdiction_id",
+      "value": "1344"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/healthz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "healthz"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Datasets",
+      "item": [
+        {
+          "name": "Current Published Versions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/current?source_code={{source_code}}&source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "current"
+              ],
+              "query": [
+                {
+                  "key": "source_code",
+                  "value": "{{source_code}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Latest by State",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/latest-by-state?source_code={{source_code}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "latest-by-state"
+              ],
+              "query": [
+                {
+                  "key": "source_code",
+                  "value": "{{source_code}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Dataset Version by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/{{dataset_version_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "{{dataset_version_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Dataset Coverage",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/{{dataset_version_id}}/coverage",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "{{dataset_version_id}}",
+                "coverage"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Field Completeness",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/{{dataset_version_id}}/field-completeness",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "{{dataset_version_id}}",
+                "field-completeness"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Current Versions + Completeness",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/datasets/current?source_year={{source_year}}&source_state={{source_state}}&include_completeness=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "datasets",
+                "current"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "include_completeness",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics / Dimensions",
+      "item": [
+        {
+          "name": "Available Jurisdictions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/jurisdictions?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "jurisdictions"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Available Agencies",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/agencies?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "agencies"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics / Homicides",
+      "item": [
+        {
+          "name": "Jurisdiction Year Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/jurisdiction-year-summary?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "jurisdiction-year-summary"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Monthly Trend",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/monthly-trend?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "monthly-trend"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Agency Year Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/agency-year-summary?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "agency-year-summary"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "agency_pk",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Clearance Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/clearance-summary?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "clearance-summary"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Weapons",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/weapons?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "weapons"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "source_weapon_code",
+                  "value": "11",
+                  "disabled": true
+                },
+                {
+                  "key": "firearm_flag",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Locations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/locations?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "locations"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "source_location_code",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Victim Demographics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/victim-demographics?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "victim-demographics"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "sex_code",
+                  "value": "M",
+                  "disabled": true
+                },
+                {
+                  "key": "race_code",
+                  "value": "B",
+                  "disabled": true
+                },
+                {
+                  "key": "age_bucket",
+                  "value": "25-34",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Offender Demographics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/offender-demographics?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "offender-demographics"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "sex_code",
+                  "value": "M",
+                  "disabled": true
+                },
+                {
+                  "key": "race_code",
+                  "value": "B",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Relationships",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/relationships?source_year={{source_year}}&source_state={{source_state}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "relationships"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "source_relationship_code",
+                  "value": "SE",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Incident List (bounded)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/incidents?source_year={{source_year}}&source_state={{source_state}}&limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "incidents"
+              ],
+              "query": [
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                },
+                {
+                  "key": "source_state",
+                  "value": "{{source_state}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "incident_year",
+                  "value": "{{source_year}}",
+                  "disabled": true
+                },
+                {
+                  "key": "unresolved_flag",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "cold_case_candidate_flag",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "firearm_involved_flag",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "domestic_violence_candidate_flag",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Incident Case View",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/incidents/{{incident_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "incidents",
+                "{{incident_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Incident Case View + Completeness",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/incidents/{{incident_id}}?include_completeness=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "incidents",
+                "{{incident_id}}"
+              ],
+              "query": [
+                {
+                  "key": "include_completeness",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comparisons",
+      "item": [
+        {
+          "name": "Compare Jurisdictions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/comparisons/jurisdictions?jurisdiction_id={{jurisdiction_id}}&jurisdiction_id=2&source_year={{source_year}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "comparisons",
+                "jurisdictions"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "2"
+                },
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                }
+              ]
+            },
+            "description": "Provide 2\u201310 jurisdiction_id values. Returns 400 if jurisdictions are not comparably covered."
+          }
+        },
+        {
+          "name": "Compare Jurisdictions (too few - expect 400)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/comparisons/jurisdictions?jurisdiction_id={{jurisdiction_id}}&source_year={{source_year}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "comparisons",
+                "jurisdictions"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{jurisdiction_id}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "{{source_year}}"
+                }
+              ]
+            },
+            "description": "Only 1 jurisdiction_id \u2014 expects 400 invalid_jurisdiction_count."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sources",
+      "item": [
+        {
+          "name": "List Sources",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/sources",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sources"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Source by Code",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/sources/{{source_code}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sources",
+                "{{source_code}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Source Capabilities",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/sources/{{source_code}}/capabilities",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sources",
+                "{{source_code}}",
+                "capabilities"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Contracts",
+      "item": [
+        {
+          "name": "List Retrieval Contracts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/retrieval/contracts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "retrieval",
+                "contracts"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Briefings",
+      "item": [
+        {
+          "name": "Create Briefing (jurisdiction summary)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retrieval_contract\": \"homicide_jurisdiction_year_summary\",\n  \"filters\": {\n    \"source_year\": 2022,\n    \"source_state\": \"VA\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/briefings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "briefings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Briefing (incident detail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retrieval_contract\": \"homicide_incident_detail\",\n  \"filters\": {\n    \"incident_id\": {{incident_id}},\n    \"include_completeness\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/briefings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "briefings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Briefing (unknown contract - expect 422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retrieval_contract\": \"not_a_real_contract\",\n  \"filters\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/briefings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "briefings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Briefing Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/briefings/{{ai_briefing_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "briefings",
+                "{{ai_briefing_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Briefing Audit Trace",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/briefings/{{ai_briefing_id}}/audit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "briefings",
+                "{{ai_briefing_id}}",
+                "audit"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin / Keys",
+      "item": [
+        {
+          "name": "Create API Key (reader)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"test-reader-key\",\n  \"role\": \"reader\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/keys",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "keys"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create API Key (operator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"test-operator-key\",\n  \"role\": \"operator\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/keys",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "keys"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revoke API Key",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/keys/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "keys",
+                "1"
+              ]
+            },
+            "description": "Replace '1' in the path with the key_id returned from Create API Key."
+          }
+        },
+        {
+          "name": "Create Key - no auth (expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"unauthed-key\",\n  \"role\": \"reader\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/keys",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "keys"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin / Ingestion",
+      "item": [
+        {
+          "name": "Trigger Ingestion Run (source_key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source_key\": \"nibrs_va_2022\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/ingestion/runs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "ingestion",
+                "runs"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Ingestion Run Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/ingestion/runs/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "ingestion",
+                "runs",
+                "1"
+              ]
+            },
+            "description": "Replace '1' in the path with ingestion_run_id from the run response."
+          }
+        },
+        {
+          "name": "Publish Dataset Version",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/ingestion/dataset-versions/{{dataset_version_id}}/publish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "ingestion",
+                "dataset-versions",
+                "{{dataset_version_id}}",
+                "publish"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Unpublish Dataset Version",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/ingestion/dataset-versions/{{dataset_version_id}}/unpublish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "ingestion",
+                "dataset-versions",
+                "{{dataset_version_id}}",
+                "unpublish"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Multi-State",
+      "item": [
+        {
+          "name": "MD: Baltimore 2023 summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/jurisdiction-year-summary?jurisdiction_id={{md_baltimore_jurisdiction_id}}&source_year=2023",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "jurisdiction-year-summary"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{md_baltimore_jurisdiction_id}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "2023"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Has data array with at least 1 row\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"array\");",
+                  "  pm.expect(body.data.length).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "CA: Los Angeles 2023 summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/homicides/jurisdiction-year-summary?jurisdiction_id={{ca_los_angeles_jurisdiction_id}}&source_year=2023",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "homicides",
+                "jurisdiction-year-summary"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{ca_los_angeles_jurisdiction_id}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "2023"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Has data array with at least 1 row\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"array\");",
+                  "  pm.expect(body.data.length).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Compare: Richmond + Baltimore (VA + MD, 2023)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/comparisons/jurisdictions?jurisdiction_id={{va_richmond_jurisdiction_id}}&jurisdiction_id={{md_baltimore_jurisdiction_id}}&source_year=2023",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "comparisons",
+                "jurisdictions"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{va_richmond_jurisdiction_id}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{md_baltimore_jurisdiction_id}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "2023"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns exactly 2 rows\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"array\");",
+                  "  pm.expect(body.data.length).to.eql(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Compare: Richmond + Baltimore + LA (VA + MD + CA, 2023)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/comparisons/jurisdictions?jurisdiction_id={{va_richmond_jurisdiction_id}}&jurisdiction_id={{md_baltimore_jurisdiction_id}}&jurisdiction_id={{ca_los_angeles_jurisdiction_id}}&source_year=2023",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "comparisons",
+                "jurisdictions"
+              ],
+              "query": [
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{va_richmond_jurisdiction_id}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{md_baltimore_jurisdiction_id}}"
+                },
+                {
+                  "key": "jurisdiction_id",
+                  "value": "{{ca_los_angeles_jurisdiction_id}}"
+                },
+                {
+                  "key": "source_year",
+                  "value": "2023"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns exactly 3 rows\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"array\");",
+                  "  pm.expect(body.data.length).to.eql(3);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Catalog: Source catalog (all states)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sources/catalog",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sources",
+                "catalog"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Source catalog includes VA, MD, CA\", function () {",
+                  "  const body = pm.response.json();",
+                  "  const states = new Set();",
+                  "  body.data.forEach(row => (row.source_states || []).forEach(s => states.add(s)));",
+                  "  pm.expect(states.has(\"VA\")).to.eql(true);",
+                  "  pm.expect(states.has(\"MD\")).to.eql(true);",
+                  "  pm.expect(states.has(\"CA\")).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

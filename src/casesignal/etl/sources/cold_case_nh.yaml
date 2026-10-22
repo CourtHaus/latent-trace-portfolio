@@ -1,0 +1,21 @@
+sources:
+  - source_key: cold_case_nh_doj_2026_05_14
+    source_family: cold_case
+    adapter_name: cold_case_nh_doj
+    source_code: NH_DOJ
+    source_name: New Hampshire DOJ — Cold Case Unit Victim List
+    source_year: 2026
+    source_state: NH
+    input_path: https://www.doj.nh.gov/content/api/documents?q=%40field_document_subcategory%7C%3D%7C6816&textsearch=&sort=title%7Casc%7CALLOW_NULLS&iterate_nodes=true&filter_mode=inclusive&type=document&size=200&page=1
+    input_type: url
+    description: >-
+      NH DOJ Cold Case Unit public registry. Two categories ingested: Unsolved
+      Homicide (case_type=homicide) and Suspicious Death (case_type=suspicious_death).
+      Missing Persons and Solved excluded. Akamai bot filter requires
+      Firefox-class UA + bypass of (403'd) robots.txt for www.doj.nh.gov; both
+      via CASESIGNAL_SCRAPER_USER_AGENT + CASESIGNAL_BYPASS_ROBOTS_HOSTS env knobs.
+    required_files: []
+    optional_files: []
+    metadata:
+      baseline_count: 115
+      detail_page_prefix: https://www.doj.nh.gov/bureaus/cold-case-unit/victim-list/

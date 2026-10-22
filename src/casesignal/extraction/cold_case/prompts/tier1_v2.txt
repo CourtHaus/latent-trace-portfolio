@@ -1,0 +1,84 @@
+You are extracting structured modus operandi data from a cold-case narrative.
+
+Return a single JSON object matching this schema:
+{
+  "weapon": string enum — one of: firearm, knife, blunt, personal, asphyxiation, fire, other, unknown
+  "weapon_phrase": string or null — a verbatim substring from the narrative that justifies the weapon classification. MUST appear exactly in the narrative (character for character). Null if weapon is "unknown".
+  "location_type": string enum — one of: residence, vehicle, public_outdoor, commercial, workplace, other, unknown
+  "location_type_phrase": string or null — verbatim substring justifying the location_type classification. Null if location_type is "unknown".
+}
+
+Classification guidance:
+  weapon:
+    firearm      — any gun, shot, bullet, shooting, gunshot wounds
+    knife        — cutting / stabbing instruments
+    blunt        — club, hammer, pipe, bludgeon, or any NAMED blunt object.
+                   "Beaten" or "beating" ALONE is NOT blunt — see personal.
+    personal     — beaten by hand/fist/foot, stomped, kicked (NOT strangulation).
+                   Any "beaten" / "beating" narrative with NO named implement
+                   is personal, not blunt. Blunt requires an object.
+    asphyxiation — strangled, suffocated, drowned, ligature (anything that cuts off air)
+    fire         — arson, set on fire, burned as cause
+    other        — any other specified weapon (poison, vehicle as weapon, etc.)
+    unknown      — narrative doesn't say or is ambiguous
+
+  location_type (walk this decision tree TOP DOWN; STOP at the first YES;
+  check each question in order, do not skip ahead):
+
+    Step 1. Is the victim INSIDE a car or truck at the time of the violent
+            event? Triggers: "driving his vehicle", "in the back seat",
+            "slumped in the driver's seat", "shot through the window"
+            while in the car, "pulled over", "riding in the car".
+              YES → vehicle. STOP. (Do not proceed even if the car is
+              parked at a store, on a road, in a lot, etc.)
+              NO  → go to Step 2.
+
+    Step 2. Is the violent event AT the dwelling itself or its PRIVATE
+            curtilage (the home's own enclosed/attached spaces)? Triggers:
+            "inside her home", "in his apartment", "at the residence of",
+            "in the (fenced) backyard", "in the driveway", "on the front
+            porch", "in the attached garage", "in the shed on the property".
+            A bare street address is GEOLOCATION, not a scene type: a body in
+            a public or natural outdoor feature described relative to an
+            address (see Step 4) is NOT residence.
+              YES → residence. STOP.
+              NO  → go to Step 3.
+
+    Step 3. Is the event INSIDE a non-residential building?
+              3a. Customer-facing business (store, bank, gas station,
+                  hotel, motel, restaurant, retail shop, convenience
+                  store)? This applies even if the victim was an employee.
+                    YES → commercial. STOP.
+              3b. Non-customer-facing occupational site (construction
+                  site, warehouse, private office, industrial facility)?
+                    YES → workplace. STOP.
+              3c. Some other enclosed non-residential structure?
+                    YES → other. STOP.
+              If NO to all of 3a/3b/3c → go to Step 4.
+
+    Step 4. Is the event OUTDOORS in a public or natural feature: a road,
+            street, intersection, sidewalk, alley, parking lot (not attached
+            to a residence), park, field, woods, ravine, ditch, creek, or an
+            open grass area? This holds EVEN IF a street address is given to
+            locate it — "in the grass in front of <address>", "in a creek
+            behind <address>", "in the street outside <address>", "in a field
+            near <address>" are all public_outdoor (the address geolocates the
+            body; the scene is the outdoor feature). Also: "near" or "in the
+            area of" a named venue but actually on a road or in a public area
+            → still public_outdoor.
+              YES → public_outdoor. STOP.
+
+    Step 5. If the narrative does not state a location or is fully
+            ambiguous → unknown.
+
+Rules:
+  - Do NOT paraphrase the phrase fields. Quote exactly.
+  - The phrase MUST be findable in the narrative via exact string search.
+  - If the narrative does not mention the attribute, return "unknown" and
+    null the phrase.
+  - When multiple locations are mentioned, report the location where the
+    defining violent event (or the body's discovery, if event location is
+    unknown) occurred.
+
+NARRATIVE:
+{about_text}

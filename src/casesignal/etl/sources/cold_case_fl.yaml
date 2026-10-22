@@ -1,0 +1,35 @@
+sources:
+  - source_key: cold_case_fl_fdle_2026_05_22
+    source_family: cold_case
+    adapter_name: cold_case_fl_fdle
+    source_code: FDLE_FL
+    source_name: Florida Department of Law Enforcement - Unsolved Cases
+    input_path: https://web.fdle.state.fl.us/unsolvedcases/public/search.jsf
+    input_type: url
+    source_year: 2026
+    source_state: FL
+    description: >-
+      Florida Department of Law Enforcement statewide unsolved cases portal.
+      The public search application is JSF/PrimeFaces and serves result rows
+      and detail navigation through AJAX postbacks. Ingestion keeps one
+      session alive, solves the page-exposed CAPTCHA text, searches each
+      configured case type, follows row-select postbacks to detail pages, and
+      downloads photos from the same session.
+
+      Access-control note: the FDLE page exposes its CAPTCHA answer in the
+      ``title`` attribute of the search input (parsed by
+      ``cold_case_fl_fdle/jsf.py::parse_captcha_answer``). Treating this as
+      a bot filter rather than an access denial is consistent with the
+      project's "bot filter != access denial" policy — the data is public,
+      the CAPTCHA is decorative, and the title attribute is server-side
+      authoritative. Surface to the operator if FDLE ever moves to a real
+      CAPTCHA (image / reCAPTCHA / etc.) so the ingestion can be paused or
+      a human-in-the-loop step added.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://web.fdle.state.fl.us/unsolvedcases/public/search.jsf
+      source_release_date: "2026-05-22"
+      case_types: ["H", "CC", "MP"]
+      rows_per_page: 50
+      max_photo_failure_ratio: 0.5

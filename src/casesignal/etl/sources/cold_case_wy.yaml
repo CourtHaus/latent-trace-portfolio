@@ -1,0 +1,22 @@
+sources:
+  - source_key: cold_case_wy_dci_2026_05_13
+    source_family: cold_case
+    adapter_name: cold_case_wy_dci
+    source_code: WY_DCI
+    source_name: Wyoming Division of Criminal Investigation — Cold Case Homicides
+    input_path: data/raw/cold_case_wy_dci/2026-05-13/wyoming_dci_cold_cases.csv
+    input_type: csv
+    source_year: 2026
+    source_state: WY
+    description: >-
+      Wyoming DCI public cold-case registry. Sourced via Looker Studio
+      embed at https://wyomingdci.wyo.gov/operations/cold-cases. Manual
+      export -> unified CSV via scripts/build_wyoming_unified_csv.py.
+      Homicide-only (12 standalone Sexual Assault rows excluded at
+      script time). Weapon + scene_type + demographics structured at
+      source; no LLM extraction.
+    required_files: []
+    optional_files: []
+    metadata:
+      baseline_count: 32
+      photos_dir: data/raw/cold_case_wy_dci/2026-05-13/photos

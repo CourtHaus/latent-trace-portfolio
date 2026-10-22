@@ -1,0 +1,13 @@
+Latent Trace uses Alembic for PostgreSQL/PostGIS schema changes.
+
+From an authorized checkout, install the locked development dependencies,
+export DATABASE_URL for the intended local database, and run:
+
+    uv run --extra dev alembic upgrade head
+
+Start from an empty database with the baseline, then apply every later revision.
+Do not edit an already-deployed migration to change behavior; add a revision.
+Review data migrations against a private backup and test upgrades before deploy.
+Production targets and destructive downgrades require an explicit recovery plan.
+
+See docs/development.md and docs/deploy/runbook.md.

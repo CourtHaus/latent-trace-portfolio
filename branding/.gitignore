@@ -1,0 +1,3 @@
+# Scratch dirs from unzipping the brand-kit archives. The .zip sources and
+# DESIGN.md are tracked; the extracted working copies are not.
+*_extracted/

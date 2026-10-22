@@ -1,0 +1,24 @@
+sources:
+  - source_key: cold_case_mn_bca_2026_05_16
+    source_family: cold_case
+    adapter_name: cold_case_mn_bca
+    source_code: BCA_MN
+    source_name: Minnesota BCA — Unsolved Cases Database
+    input_path: data/raw/uploads/cold_case_mn_bca_2026_05_16.json
+    input_type: file
+    source_year: 2026
+    source_state: MN
+    description: >-
+      Minnesota Bureau of Criminal Apprehension statewide Unsolved Cases
+      compendium (homicides only). The case list sits behind an Imperva WAF;
+      it is harvested out-of-band via a browser console fetch against the
+      SharePoint REST API (see the cold_case_mn_bca adapter docstring and the
+      Phase 8 design doc). Per-case Summary-of-Case PDFs and victim photos are
+      static assets fetched programmatically.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://portal.dps.mn.gov/bca/unsolved-cases/Pages/database.aspx
+      source_release_date: "2026-05-16"
+      baseline_count: 96
+      portal_origin: https://portal.dps.mn.gov

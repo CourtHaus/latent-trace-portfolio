@@ -1,0 +1,9 @@
+# Keep ignored local credentials and operator data out of build uploads.
+.gcloudignore
+.git
+.gitignore
+#!include:.gitignore
+frontend/node_modules/
+frontend/.next/
+frontend/coverage/
+frontend/tsconfig.tsbuildinfo

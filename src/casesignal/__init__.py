@@ -1,0 +1,1 @@
+"""CaseSignal application package."""

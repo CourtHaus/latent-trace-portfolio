@@ -1,0 +1,29 @@
+sources:
+  - source_key: cold_case_oh_ag_2026_05_13
+    source_family: cold_case
+    adapter_name: cold_case_oh_ag
+    source_code: BCI_OH_AG
+    source_name: Ohio Attorney General — Statewide Unsolved Homicides
+    input_path: https://www.ohioattorneygeneral.gov/Law-Enforcement/Local-Law-Enforcement/Cold-Case
+    input_type: url
+    source_year: 2026
+    source_state: OH
+    description: >-
+      Ohio Attorney General's statewide cold-case database hosted by the
+      Bureau of Criminal Investigation. Aggregates ~2,797 unsolved-homicide
+      submissions from Ohio's county sheriffs and municipal police
+      departments. The AG is the registrar; the case-owning agency is the
+      originating local LEA. Each case includes structured demographics,
+      address, agency contact, and narrative.
+
+      Note on ingestion: the AG listing paginates via plain `?page=N` GET
+      query parameter. prepare_input walks pages 1..N until a page returns
+      zero new rows. The pager block reports `(of N total)` for completeness
+      but live row count is authoritative.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://www.ohioattorneygeneral.gov/ColdCase
+      source_release_date: "2026-05-13"
+      list_url: https://www.ohioattorneygeneral.gov/Law-Enforcement/Local-Law-Enforcement/Cold-Case
+      baseline_count: 2797

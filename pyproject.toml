@@ -1,0 +1,144 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "casesignal"
+version = "0.1.0"
+description = "Cold-case data platform — ingestion, extraction, and correlation."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+authors = [
+    { name = "Courtney Hammond", email = "courtney@latenttrace.org" }
+]
+dependencies = [
+    "fastapi>=0.115,!=0.136.3",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "pyyaml>=6.0",
+    "uvicorn>=0.30",
+    "openai>=1.50",
+    "httpx>=0.28",
+    # curl_cffi impersonates a real libcurl TLS fingerprint (JA3/JA4) so
+    # Cloudflare-Bot-Management sites that fingerprint-block Python's ssl
+    # stack (e.g. AR ASP cold cases) are reachable under our branded UA.
+    # Opt-in per PoliteHTTPClient via tls_impersonate; httpx stays the default.
+    "curl-cffi>=0.13",
+    "slowapi>=0.1.9",
+    "python-slugify>=8.0.0",
+    "redis>=5.0,<9",
+    "beautifulsoup4>=4.12",
+    # Transitive of beautifulsoup4; pinned forward to clear CVE-2026-49476 and
+    # CVE-2026-49477 (soupsieve <= 2.8.3). Fixed in 2.8.4.
+    "soupsieve>=2.8.4",
+    "pdfplumber>=0.11",
+    "pikepdf>=9.0",
+    # Security floor for the image dependency used by pdfplumber and pikepdf.
+    # Pillow 13 requires Python 3.11 or newer.
+    "pillow>=13.0.0",
+    # 2.62.0's FastAPI integration re-wraps the route endpoint on every request,
+    # accumulating _sentry_call frames until RecursionError (~req 980) takes the
+    # route down for good. Fixed in 2.63.0. See constraints.txt for the full pin.
+    "sentry-sdk>=2.63.0",
+]
+
+[project.urls]
+Homepage = "https://latenttrace.org"
+Repository = "https://github.com/CourtHaus/latent-trace-portfolio"
+Documentation = "https://github.com/CourtHaus/latent-trace-portfolio/blob/main/docs/README.md"
+Issues = "https://github.com/CourtHaus/latent-trace-portfolio/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=26.10.1",
+    "mypy>=1.0",
+    "ruff>=0.5",
+    "alembic>=1.13",
+    "types-PyYAML>=6.0",
+    # Transitive of alembic; pinned forward to clear CVE-2026-44307.
+    "Mako>=1.3.12",
+]
+
+[project.scripts]
+casesignal-api = "casesignal.api.main:main"
+casesignal-etl = "casesignal.etl.runners.run_pipeline:main"
+casesignal-etl-inspect = "casesignal.etl.runners.inspect_source:main"
+casesignal-ingestion-worker = "casesignal.worker.ingestion_loop:run_ingestion_worker_loop"
+casesignal-extract-cold-cases = "casesignal.extraction.cold_case.cli:main"
+casesignal-promote-victim-demographics = "casesignal.extraction.cold_case.promote_demographics:main"
+casesignal-extraction-worker = "casesignal.worker.extraction_loop:run_extraction_worker_loop"
+casesignal-geocoding-worker = "casesignal.worker.geocoding_loop:run_geocoding_worker_loop"
+casesignal-source-scout = "casesignal.scout.cli:main"
+casesignal-adapter-draft = "casesignal.drafter.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["casesignal*"]
+
+[tool.setuptools.package-data]
+"casesignal.etl.sources" = ["*.yaml"]
+
+[tool.black]
+line-length = 100
+# Retain the existing syntax style; runtime support starts at Python 3.11.
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# Pyflakes (F) catches real bugs: unused imports, undefined names, unused
+# vars. isort (I) enforces and auto-fixes import ordering (replaces the
+# standalone isort). pyupgrade (UP) retains our conservative py310 syntax target
+# (PEP 585/604 generics, collections.abc imports). bugbear (B) flags likely
+# bugs (mutable defaults, unused loop vars, etc.). Broader style families
+# (pycodestyle E, etc.) are still deferred; line-length is owned by black
+# at [tool.black].
+select = ["F", "I", "UP", "B"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's parameter helpers are sentinel factories meant to be called in
+# argument defaults (the framework's documented idiom) — they return
+# immutable markers, not shared mutable state, so they are not real B008
+# violations. Whitelisting them is the maintainer-recommended fix.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Header",
+    "fastapi.Cookie",
+    "fastapi.Body",
+    "fastapi.Form",
+    "fastapi.File",
+    "fastapi.Security",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: end-to-end tests requiring a live Postgres database",
+    "extractor_validation: ship-gate validation set; requires recorded LLM responses",
+]
+filterwarnings = [
+    # starlette >=1.3 deprecates its httpx-backed TestClient; the warning fires
+    # from fastapi's own testclient shim (fastapi 0.136 pin), not our code.
+    # Drop this filter when fastapi is upgraded past the httpx2 transition.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated.*:starlette.exceptions.StarletteDeprecationWarning",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+]

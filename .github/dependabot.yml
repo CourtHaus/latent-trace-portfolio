@@ -1,0 +1,43 @@
+version: 2
+
+updates:
+  # uv.lock is authoritative; do not update constraints.txt independently.
+  # The Security workflow audits the locked Python set. Upgrade with uv, then
+  # regenerate the derived constraints export and run the full checks.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 0
+    groups:
+      backend-production:
+        dependency-type: "production"
+      backend-development:
+        dependency-type: "development"
+
+  # Frontend — Next.js / React app (pnpm lockfile).
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      frontend-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions used across all workflows. Grouping keeps action bumps
+  # (and tag -> SHA hardening follow-ups) in a single PR.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"

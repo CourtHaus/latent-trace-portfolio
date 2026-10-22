@@ -1,0 +1,47 @@
+# Pre-commit hooks. One-time setup after cloning:
+#
+#     uv run pre-commit install
+#
+# These run on `git commit` against staged files and mirror what CI enforces,
+# so problems are caught BEFORE the commit exists. The headline is gitleaks:
+# a secret in any pushed commit is compromised even if later removed, so
+# catching it pre-commit (not just in CI, after the push) is the point.
+repos:
+  # Secret scanning — same scanner CI runs (security.yaml), but pre-commit.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Belt-and-suspenders with gitleaks for the most common leak.
+      - id: detect-private-key
+      # Don't let a stray large artifact (dumps, photos, exports) get committed.
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+      - id: check-merge-conflict
+      - id: check-yaml
+
+  # Lint, scoped to exactly what CI lints (src tests scripts) — migrations and
+  # other dirs are intentionally outside CI's ruff scope, so keep them out here
+  # too. Runs the project's own ruff via uv for version parity.
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff check (src tests scripts)
+        # --extra dev: ruff lives in [project.optional-dependencies].dev, which
+        # `uv run` does NOT include by default, so a fresh checkout would fail
+        # without it.
+        entry: uv run --extra dev ruff check src tests scripts
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: repository-docs
+        name: documentation links and repository hygiene
+        entry: python3 scripts/check_repository_docs.py
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -1,0 +1,27 @@
+sources:
+  - source_key: cold_case_ut_2026_05_11
+    source_family: cold_case
+    adapter_name: cold_case_ut
+    source_code: BCI_UT_PD
+    source_name: Utah Bureau of Criminal Identification — Cold Case Database
+    input_path: https://bci.utah.gov/wp-sitemap-posts-dps_coldcases-1.xml
+    input_type: url
+    source_year: 2026
+    source_state: UT
+    description: >-
+      Utah Bureau of Criminal Identification (BCI) cold-case database. State
+      compendium of cold cases mandated by Utah Senate Bill 160 (2018), which
+      requires every Utah law enforcement agency to submit cases unsolved ≥3
+      years. Detail pages publish first-party demographic, physical, narrative,
+      and federal cross-reference (NCIC, NamUs) data. This adapter enumerates
+      via WordPress sitemap (586 entries across all case types as of 2026-05-11)
+      and filters to Unsolved Homicide at the detail-parse stage. First adapter
+      to populate the ncic_case_id column added in migration 0005.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://bci.utah.gov/coldcases/
+      sitemap_url: https://bci.utah.gov/wp-sitemap-posts-dps_coldcases-1.xml
+      source_release_date: "2026-05-11"
+      baseline_count: 586
+      baseline_count_scope: all_types

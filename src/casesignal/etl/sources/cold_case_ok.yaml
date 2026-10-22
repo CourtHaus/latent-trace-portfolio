@@ -1,0 +1,26 @@
+sources:
+  - source_key: cold_case_ok_osbi_2026_07_08
+    source_family: cold_case
+    adapter_name: cold_case_ok_osbi
+    source_code: OSBI_OK
+    source_name: Oklahoma State Bureau of Investigation - Cold Case Files
+    input_path: https://oklahoma.gov/osbi/services/investigative-services-division/cold-case-files/cold-cases.html
+    input_type: url
+    source_year: 2026
+    source_state: OK
+    description: >-
+      Oklahoma State Bureau of Investigation Cold Case Unit: ~400 cold cases
+      (homicide, missing person, suspicious disappearance, suspicious death)
+      published as inline AEM teaser blocks across 10 alphabetical range
+      pages. OSBI is the first-party investigating agency. No per-case URLs
+      and no structured age/race/sex/county — nearly every field lives in the
+      narrative prose and is recovered by Tier-1/Tier-2 LLM extraction. A
+      conservative narrative-county regex provides a partial geocoding floor.
+      Plain HTTP 200 (no Cloudflare); robots.txt allow-all.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://oklahoma.gov/osbi/services/investigative-services-division/cold-case-files/cold-cases.html
+      source_release_date: "2026-07-08"
+      rate_limit_seconds: 2.0
+      max_photo_failure_ratio: 0.5

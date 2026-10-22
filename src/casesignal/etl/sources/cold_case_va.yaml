@@ -1,0 +1,20 @@
+sources:
+  - source_key: cold_case_va_2025_03_27
+    source_family: cold_case
+    adapter_name: cold_case_va
+    source_code: VSPCCD_VA
+    source_name: Virginia VSPCCD Cold Case Database
+    input_path: data/raw/cold_case_va/2025_03_27/raw_data.csv
+    input_type: csv
+    source_year: 2025
+    source_state: VA
+    description: >-
+      Virginia State Police Cold Case Database extract (snapshot 2025-03-27).
+      Case-level records covering homicides, missing persons, and related
+      unresolved incidents with WKT POINT coordinates geocoded by VSPCCD.
+    required_files:
+      - raw_data.csv
+    optional_files: []
+    metadata:
+      source_url: https://vspccd.dcjs.virginia.gov/
+      source_release_date: "2025-03-27"

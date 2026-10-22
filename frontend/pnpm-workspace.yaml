@@ -1,0 +1,9 @@
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
+
+# Temporary development-only exception approved 2026-10-22. Review by
+# 2026-11-22; rationale and removal criteria: ../docs/security-backlog.md.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/CourtHaus/latent-trace-portfolio/security/policy
+    about: Report vulnerabilities privately; do not use a public issue.
+  - name: Case correction, removal, or permission request
+    url: https://latenttrace.org/privacy
+    about: Email courtney@latenttrace.org. Do not post personal case information here.

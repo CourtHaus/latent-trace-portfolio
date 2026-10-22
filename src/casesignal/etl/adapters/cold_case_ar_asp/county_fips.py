@@ -1,0 +1,105 @@
+"""Arkansas county-name → FIPS lookup.
+
+75 Arkansas counties, FIPS prefix 05 (state) + 3-digit county code per the
+2020 Census. Values match data/static/county_centroids.csv (the same file
+the county-centroid geocoding tier reads), so every FIPS this module returns
+is guaranteed to have a centroid. Lookup is case-insensitive and tolerates
+a trailing 'County'.
+"""
+
+from __future__ import annotations
+
+# 75 counties, alphabetical, 5-digit FIPS (05 = AR, then 3-digit county).
+AR_COUNTY_FIPS: dict[str, str] = {
+    "Arkansas": "05001",
+    "Ashley": "05003",
+    "Baxter": "05005",
+    "Benton": "05007",
+    "Boone": "05009",
+    "Bradley": "05011",
+    "Calhoun": "05013",
+    "Carroll": "05015",
+    "Chicot": "05017",
+    "Clark": "05019",
+    "Clay": "05021",
+    "Cleburne": "05023",
+    "Cleveland": "05025",
+    "Columbia": "05027",
+    "Conway": "05029",
+    "Craighead": "05031",
+    "Crawford": "05033",
+    "Crittenden": "05035",
+    "Cross": "05037",
+    "Dallas": "05039",
+    "Desha": "05041",
+    "Drew": "05043",
+    "Faulkner": "05045",
+    "Franklin": "05047",
+    "Fulton": "05049",
+    "Garland": "05051",
+    "Grant": "05053",
+    "Greene": "05055",
+    "Hempstead": "05057",
+    "Hot Spring": "05059",
+    "Howard": "05061",
+    "Independence": "05063",
+    "Izard": "05065",
+    "Jackson": "05067",
+    "Jefferson": "05069",
+    "Johnson": "05071",
+    "Lafayette": "05073",
+    "Lawrence": "05075",
+    "Lee": "05077",
+    "Lincoln": "05079",
+    "Little River": "05081",
+    "Logan": "05083",
+    "Lonoke": "05085",
+    "Madison": "05087",
+    "Marion": "05089",
+    "Miller": "05091",
+    "Mississippi": "05093",
+    "Monroe": "05095",
+    "Montgomery": "05097",
+    "Nevada": "05099",
+    "Newton": "05101",
+    "Ouachita": "05103",
+    "Perry": "05105",
+    "Phillips": "05107",
+    "Pike": "05109",
+    "Poinsett": "05111",
+    "Polk": "05113",
+    "Pope": "05115",
+    "Prairie": "05117",
+    "Pulaski": "05119",
+    "Randolph": "05121",
+    "St. Francis": "05123",
+    "Saline": "05125",
+    "Scott": "05127",
+    "Searcy": "05129",
+    "Sebastian": "05131",
+    "Sevier": "05133",
+    "Sharp": "05135",
+    "Stone": "05137",
+    "Union": "05139",
+    "Van Buren": "05141",
+    "Washington": "05143",
+    "White": "05145",
+    "Woodruff": "05147",
+    "Yell": "05149",
+}
+
+
+def lookup(county_name: str | None) -> str | None:
+    """Case-insensitive county lookup, tolerates a trailing 'County'.
+
+    Returns None on empty/None input or unknown county.
+    """
+    if not county_name:
+        return None
+    cleaned = county_name.strip()
+    if cleaned.lower().endswith(" county"):
+        cleaned = cleaned[: -len(" county")].strip()
+    for canonical, fips in AR_COUNTY_FIPS.items():
+        if canonical.lower() == cleaned.lower():
+            return fips
+    return None

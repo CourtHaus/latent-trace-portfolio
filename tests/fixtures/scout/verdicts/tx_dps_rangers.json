@@ -1,0 +1,14 @@
+{
+  "gates": {"cold_homicide": "pass", "official_first_party": "pass", "reason": null},
+  "state": "TX", "county": null, "level": "state",
+  "agency": "Texas Rangers (DPS)", "agency_type": "dps",
+  "page_type": "list_detail", "needs_js": false, "tls_impersonate_needed": false,
+  "robots": "allow", "auth_required": false,
+  "case_type_mix": ["homicide"], "source_id_strategy": "stable", "source_id_field": "Re#",
+  "plottability_hint": 1.0,
+  "fields": {
+    "victim_name": {"present": true, "location": "structured", "page": "list", "example": "Example Person"},
+    "county": {"present": true, "location": "structured", "page": "list", "example": "Orange County"},
+    "incident_date": {"present": true, "location": "narrative", "page": "detail"}
+  }
+}

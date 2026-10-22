@@ -1,0 +1,204 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  PNPM_VERSION: "10.33.2"
+  DATABASE_URL: postgresql+psycopg2://casesignal:casesignal@localhost:5432/casesignal
+  # Test harness redirects DATABASE_URL here; same DB as above in CI so the
+  # redirect is a no-op and migrations already ran against it.
+  TEST_DATABASE_URL: postgresql+psycopg2://casesignal:casesignal@localhost:5432/casesignal
+  APP_ENV: test
+  KEY_HMAC_SECRET: ci-test-hmac-secret
+
+jobs:
+  documentation:
+    name: Documentation and repository hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check documentation links and private artifact boundaries
+        run: python3 scripts/check_repository_docs.py
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Exercise the full support floor declared in pyproject
+        # (requires-python = ">=3.11"), not just the latest interpreter.
+        python-version: ["3.11", "3.12"]
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.5
+        env:
+          POSTGRES_USER: casesignal
+          POSTGRES_PASSWORD: casesignal
+          POSTGRES_DB: casesignal
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U casesignal -d casesignal"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install backend dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Apply migrations
+        run: uv run alembic upgrade head
+
+      # Sentinel table name must match SENTINEL_TABLE in tests/support/db_guard.py
+      # and tools/create_test_db.sh; the pytest guard refuses to run without it.
+      - name: Stamp test-DB sentinel
+        run: psql "postgresql://casesignal:casesignal@localhost:5432/casesignal" -c "CREATE TABLE IF NOT EXISTS public._casesignal_test_sentinel ()"
+        env:
+          PGPASSWORD: casesignal
+
+      - name: Ruff
+        run: uv run ruff check src tests scripts
+
+      - name: mypy
+        run: uv run mypy src tests
+
+      - name: pytest
+        run: uv run pytest -m "not extractor_validation" --tb=short
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test --run
+
+  production-build:
+    name: Production Build Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.5
+        env:
+          POSTGRES_USER: casesignal
+          POSTGRES_PASSWORD: casesignal
+          POSTGRES_DB: casesignal
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U casesignal -d casesignal"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install backend dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Apply migrations
+        run: uv run alembic upgrade head
+
+      - name: Start API
+        run: |
+          uv run casesignal-api &
+          echo $! > /tmp/casesignal-api.pid
+
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8000/healthz >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "API did not become healthy within 30 seconds" >&2
+          exit 1
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          API_BASE_URL: http://127.0.0.1:8000
+        run: pnpm build

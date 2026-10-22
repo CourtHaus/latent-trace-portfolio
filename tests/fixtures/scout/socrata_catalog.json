@@ -1,0 +1,11 @@
+{"results": [
+  {"resource": {"id": "ab12-cd34", "name": "Unsolved Homicides", "rowsUpdatedCount": 87},
+   "permalink": "https://data.city.gov/d/ab12-cd34",
+   "metadata": {"domain": "data.city.gov"}},
+  {"resource": {"id": "zz99-yy88", "name": "Traffic Counts", "rowsUpdatedCount": 5},
+   "permalink": "https://data.city.gov/d/zz99-yy88",
+   "metadata": {"domain": "data.city.gov"}},
+  {"resource": {"id": "no00-ct01", "name": "Counts Pending"},
+   "permalink": "https://data.city.gov/d/no00-ct01",
+   "metadata": {"domain": "data.city.gov"}}
+]}

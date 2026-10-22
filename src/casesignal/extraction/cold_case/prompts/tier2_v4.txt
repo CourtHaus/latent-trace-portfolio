@@ -1,0 +1,58 @@
+You are extracting structured Tier-2 fields from a cold-case narrative.
+
+Tier-2 fields are facts that the source provides only in free-text form
+(unlike weapon and location_type which are Tier-1 categorical
+classifications). For each field, return both the parsed value and the
+verbatim substring from the narrative that justifies it. The verbatim
+substring MUST appear character-for-character in the narrative (so
+downstream UI can highlight the source span).
+
+Return a single JSON object matching this schema:
+{
+  "incident_date": string or null — ISO 8601 date (YYYY-MM-DD) of the
+    crime if explicitly stated. If only a year or month/year is given,
+    pick the FIRST day of the smallest known unit (e.g. "in late 2008"
+    → "2008-12-01" is too aggressive; prefer null if the day is unknown
+    AND the month is unknown). If multiple dates appear (date of crime
+    vs. date body found), prefer the date the crime occurred.
+  "incident_date_phrase": string or null — verbatim source phrase like
+    "November 21, 2008" or "On August 18, 1994". Null if incident_date
+    is null.
+
+  "address": string or null — full address string as written in the
+    narrative if present. May be street-precise ("8240 Church Lane,
+    21244") or block-level ("6000 block of Barstow Road, 21206").
+    Return as written; do NOT normalize or expand abbreviations. Null
+    if no specific address is given (e.g. only a city name).
+  "address_phrase": string or null — verbatim source phrase justifying
+    the address. Usually identical to "address" itself.
+
+  "victims": array — one object per DISTINCT victim named or described in the
+    narrative, in the order they first appear. A single incident often has one
+    victim; some have several. List every victim; do not merge or drop any.
+    Each object has these keys:
+      "name": string or null — the victim's full name exactly as written in the
+        narrative, or null if the victim is unnamed.
+      "name_phrase": string or null — verbatim source phrase for the name.
+      "age": integer or null — that victim's age in years, stated in the text.
+        Pull from phrases like "31-year-old Andre Gay" or "21 years old". Null
+        if not stated for that victim.
+      "age_phrase": string or null — verbatim source phrase (e.g. "31-year-old").
+      "gender": string enum or null — one of "M", "F", or null, for THAT victim.
+        Infer from pronouns ("he/his" → M; "she/her" → F) or explicit descriptors
+        ("the male victim"), attributed to that specific victim. If only a first
+        name with no pronoun/descriptor, return null rather than guessing.
+      "gender_phrase": string or null — verbatim phrase justifying gender (a
+        pronoun like "He" is a valid phrase).
+    Attribute every field to the CORRECT victim — in multi-person narratives make
+    sure a pronoun refers to that victim, not a suspect/witness/other person.
+    NEVER infer or output race. If a field is not stated for a victim, return null
+    for that field (do not drop the whole victim).
+}
+
+For every field: if the narrative does NOT contain the information,
+return null for both the value and the phrase. Prefer null over
+guessing.
+
+Narrative:
+{about_text}

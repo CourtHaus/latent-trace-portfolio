@@ -1,0 +1,95 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    # Weekly Monday 13:00 UTC — surfaces newly-disclosed CVEs without
+    # depending on PR traffic.
+    - cron: "0 13 * * 1"
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pip-audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Export locked dependencies
+        # Audit the exact versions pinned in uv.lock (prod + dev extras).
+        # --no-emit-project drops the editable `casesignal` install, which
+        # pip-audit can't resolve on PyPI; real CVEs live in the deps.
+        run: uv export --frozen --no-emit-project --all-extras --format requirements-txt > /tmp/audit-requirements.txt
+
+      - name: Run pip-audit
+        run: uv run --with pip-audit pip-audit --strict --progress-spinner off --requirement /tmp/audit-requirements.txt
+
+  pnpm-audit:
+    name: pnpm-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: "10.33.2"
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run pnpm audit
+        # Gate on high/critical (actionable); moderate/low are surfaced in the
+        # log without failing the build to avoid blocking on transitive noise.
+        run: pnpm audit --audit-level high
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_VERSION: "8.30.0"
+          GITLEAKS_ENABLE_COMMENTS: "false"
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"

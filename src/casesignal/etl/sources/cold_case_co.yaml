@@ -1,0 +1,34 @@
+sources:
+  - source_key: cold_case_co_2026_05_11
+    source_family: cold_case
+    adapter_name: cold_case_co
+    source_code: CBI_CO_PD
+    source_name: Colorado Bureau of Investigation — Cold Case Database
+    input_path: https://apps.colorado.gov/apps/coldcase/search.html
+    input_type: url
+    source_year: 2026
+    source_state: CO
+    description: >-
+      Colorado Bureau of Investigation (CBI) cold-case database. State-level
+      compendium of unsolved homicide cases submitted by 86 county and
+      municipal law enforcement agencies. Detail pages publish structured
+      first-party demographic, physical, and federal cross-reference data;
+      this adapter is the first to populate the multi-photo schema and the
+      new victim-fidelity + external-references columns introduced in
+      migration 0004.
+
+      Note on ingestion: CBI's search-page pagination is broken for
+      non-browser clients (curl/httpx/headless Playwright all return the
+      same 10 cases regardless of page param). The case index is
+      therefore produced via tools/co_userscript.user.js — a
+      Violentmonkey/Tampermonkey userscript that runs in a real browser
+      session, scrapes the paginated index, and exports JSON. Detail-page
+      fetches in load_raw work fine programmatically.
+    required_files: []
+    optional_files: []
+    metadata:
+      source_url: https://apps.colorado.gov/apps/coldcase/search.html
+      source_release_date: "2026-05-11"
+      baseline_manifest_csv: data/raw/cold_case_co/2026_05_11/raw_data.csv
+      search_index_json: data/raw/cold_case_co/2026_05_11/case_index.json
+      baseline_count: 1400

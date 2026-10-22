@@ -1,0 +1,23 @@
+# Cloud Build config for the API container.
+#
+# Used instead of `gcloud builds submit --tag ...` because the API image is
+# built from `Dockerfile.api` (not a default-named `Dockerfile`), and
+# `gcloud builds submit` has no `-f`/`--file` flag — `--tag` only works with a
+# Dockerfile literally named `Dockerfile`. So we drive an explicit docker build.
+#
+# Build + push:   gcloud builds submit --config cloudbuild.yaml --region us-central1 .
+# Then deploy:    gcloud run deploy casesignal-api-preview \
+#                   --image us-central1-docker.pkg.dev/$PROJECT_ID/casesignal/casesignal-api:preview \
+#                   --region us-central1
+# (image-only deploy preserves the service's existing env/secrets).
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - Dockerfile.api
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/casesignal/casesignal-api:preview
+      - .
+images:
+  - us-central1-docker.pkg.dev/$PROJECT_ID/casesignal/casesignal-api:preview
